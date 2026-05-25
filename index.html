@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Typing Plant Generator</title>
-        <link rel="stylesheet" href="style.css">
-        <script src="main.js"></script>
-    </head>
-    <body>
-        <div id="wrap">
-            <div id="header">
-                <h1>Typing Plant Generator</h1>
-                <p>Every keypress makes your plants grow this is one time only no saved data.And feel free to type anything below.</p>
-
-            </div>
-            <div id="stats">
-                <div class="stat">Steams<span id="sc">0</span></div>
-                <div class="stat">Leaves<span id="lc">0</span></div>
-                <div class="stat">Flowers<span id="fc">0</span></div>
-                <div class="stat">Characters <span id="cc">0</span></div>
-            </div>
-            <canvas id="canvas"></canvas>
-            <div id="inputarea">
-                <textarea id="typebox" placeholder="Start typing fool do you not want your flower to grow!!" autocomplete="off" spellcheck="false"></textarea>
-                <div id="hint">Vowels grow flowers. Spaces branch steams. Fast typing streches leaves.</div>
-                <button id="clearbtn">Clear plant</button>
-            </div>
-        </div>
-    </body>
+<head>
+ 
+  <title>Typing Plant Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="wrap">
+    <div id="header">
+      <h1>Typing Plant Generator</h1>
+      <p>Every keystroke grows your plant. Type anything below.</p>
+    </div>
+    <div id="stats">
+      <div class="stat">Stems <span id="sc">0</span></div>
+      <div class="stat">Leaves <span id="lc">0</span></div>
+      <div class="stat">Flowers <span id="fc">0</span></div>
+      <div class="stat">Characters <span id="cc">0</span></div>
+    </div>
+    <canvas id="canvas"></canvas>
+    <div id="inputarea">
+      <textarea id="typebox" placeholder="Start typing to grow your plant..." autocomplete="off" spellcheck="false"></textarea>
+      <div id="hint">Vowels grow flowers. Spaces branch stems. Fast typing stretches leaves.</div>
+      <button id="clearbtn">Clear plant</button>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
 </html>

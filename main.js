@@ -132,29 +132,26 @@ class Plant {
       newTips.push(child);
       totalStems++;
     }
-const idx= this.tips.indexOf(tip);
-if (idx !== -1) this.tips.splice(idx, 1, ...newTips);
+    const idx = this.tips.indexOf(tip);
+    if (idx !== -1) this.tips.splice(idx, 1, ...newTips);
   }
-  addLeaf(seg){
+
+  addLeaf(seg) {
     const t = rnd(0.3, 0.9);
     const bx = seg.x + Math.cos(seg.angle) * seg.len * t;
-    const by = seg.y + Math.sin(seg.angle) * seg.len *t;
-    const side = Math.random() < 0.5 ? 1: -1;
+    const by = seg.y + Math.sin(seg.angle) * seg.len * t;
+    const side = Math.random() < 0.5 ? 1 : -1;
     const lAngle = seg.angle + side * rnd(0.6, 1.2);
     const lLen = rnd(12, 26);
-    seg.leaves.push({
-      x: bx, 
-      y: by,
-      angle: lAngle,
-      len: lLen,
-      color: this.leafColor
-    });
-    totalFlowers.leafColor ++;
+    seg.leaves.push({ x: bx, y: by, angle: lAngle, len: lLen, color: this.leafColor });
+    totalLeaves++;
   }
-  draw(){
+
+  draw() {
     this.drawSeg(this.root);
   }
-  drawSeg(seg){
+
+  drawSeg(seg) {
     ctx.strokeStyle = seg.color;
     ctx.lineWidth = seg.thick;
     ctx.lineCap = 'round';
@@ -162,30 +159,31 @@ if (idx !== -1) this.tips.splice(idx, 1, ...newTips);
     ctx.moveTo(seg.x, seg.y);
     ctx.lineTo(seg.ex, seg.ey);
     ctx.stroke();
-    for (const leaf of seg.leaves) this.drawLeaf(leaf);
-    if (seg.flower) this.drawFlower(seg.flower);
+
     for (const leaf of seg.leaves) this.drawLeaf(leaf);
     if (seg.flower) this.drawFlower(seg.flower);
     for (const child of seg.children) this.drawSeg(child);
   }
-  drawLeaf(leaf){
+
+  drawLeaf(leaf) {
     ctx.save();
     ctx.translate(leaf.x, leaf.y);
     ctx.rotate(leaf.angle);
     ctx.fillStyle = leaf.color;
     ctx.globalAlpha = 0.88;
     ctx.beginPath();
-    ctx.ellipse(leaf.len * 0.5, 0, leaf.len * 0.5, leaf.len * 0.18, 0,0, Math.PI * 2);
+    ctx.ellipse(leaf.len * 0.5, 0, leaf.len * 0.5, leaf.len * 0.18, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = 1;
     ctx.restore();
   }
-  drawFlower(f){
+
+  drawFlower(f) {
     ctx.save();
     ctx.translate(f.x, f.y);
-    for (let i = 0; i < f.petals; i++){
+    for (let i = 0; i < f.petals; i++) {
       ctx.save();
-      ctx.rotate(f.rot + (i / f.petals)* Math.PI * 2);
+      ctx.rotate(f.rot + (i / f.petals) * Math.PI * 2);
       ctx.fillStyle = f.color;
       ctx.globalAlpha = 0.9;
       ctx.beginPath();
@@ -201,45 +199,59 @@ if (idx !== -1) this.tips.splice(idx, 1, ...newTips);
     ctx.restore();
   }
 }
-function shiftPlant(seg, dx){
+
+function getPlantX(index, total) {
+  if (total === 1) return W / 2;
+  const margin = 60;
+  const step = (W - margin * 2) / (total - 1);
+  return margin + index * step;
+}
+
+function shiftPlant(seg, dx) {
   seg.x += dx;
   seg.ex += dx;
-  if (seg.flower) {seg.flower.x += dx;}
- for (const l of seg.leaves) l.x += dx;
- for (const c of seg.children) shiftPlant(c, dx);
+  if (seg.flower) { seg.flower.x += dx; }
+  for (const l of seg.leaves) l.x += dx;
+  for (const c of seg.children) shiftPlant(c, dx);
 }
-function redistributePlants(){
-  plants.forEach((p, i)=>{
+
+function redistributePlants() {
+  plants.forEach((p, i) => {
     const nx = getPlantX(i, plants.length);
     const dx = nx - p.x;
-    if (Math.abs(dx) > 1) shiftPlant (p.root,dx);
+    if (Math.abs(dx) > 1) shiftPlant(p.root, dx);
     p.x = nx;
   });
 }
-function drawBackground(){
+
+function drawBackground() {
   const g = ctx.createLinearGradient(0, 0, 0, H);
   g.addColorStop(0, '#0d1f17');
   g.addColorStop(1, '#1a3328');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, W, H);
+
   ctx.fillStyle = '#1a2e22';
   ctx.beginPath();
-  ctx.ellipse(W/2, H - 10, W * 0.55, 22, 0, 0, Math.PI * 2);
+  ctx.ellipse(W / 2, H - 10, W * 0.55, 22, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.fillRect(0, H - 18, W, 18);
 }
-function updateStats(){
+
+function updateStats() {
   document.getElementById('sc').textContent = totalStems;
-  documnet.getElementById('lc').textContent = totalLeaves;
+  document.getElementById('lc').textContent = totalLeaves;
   document.getElementById('fc').textContent = totalFlowers;
   document.getElementById('cc').textContent = charCount;
 }
-function render(){
+
+function render() {
   ctx.clearRect(0, 0, W, H);
   drawBackground();
-  for (const plant of plants) p.draw();
+  for (const p of plants) p.draw();
   updateStats();
 }
+
 let prevLen = 0;
 
 typebox.addEventListener('input', () => {
@@ -253,23 +265,30 @@ typebox.addEventListener('input', () => {
     prevLen = val.length;
     return;
   }
-const newChars = val.slice(prevLen);
-prevLen = val.length;
-for (const ch of newChars){
-  charCount++;
-  if (ch === '\n'){
-    plants.push(new Plant(0));
-    redistributePlants();
-    continue;
+
+  const newChars = val.slice(prevLen);
+  prevLen = val.length;
+
+  for (const ch of newChars) {
+    charCount++;
+
+    if (ch === '\n') {
+      plants.push(new Plant(0));
+      redistributePlants();
+      continue;
+    }
+
+    if (plants.length === 0) {
+      plants.push(new Plant(W / 2));
+    }
+
+    const target = plants[plants.length - 1];
+    target.grow(ch, speed);
   }
-  if (plants.length ===0){
-    plants.push(new Plant(W/2));
-  }
-  const target = plants[plants.length - 1];
-  target.grow(ch, speed);
-}
-render();
+
+  render();
 });
+
 clearbtn.addEventListener('click', () => {
   plants = [];
   totalStems = 0;
@@ -281,6 +300,7 @@ clearbtn.addEventListener('click', () => {
   ctx.clearRect(0, 0, W, H);
   drawBackground();
   updateStats();
-})
+});
+
 drawBackground();
 typebox.focus();
